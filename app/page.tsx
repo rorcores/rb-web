@@ -153,7 +153,7 @@ export default function Home() {
       <div className={styles.overlay} aria-hidden="true" />
       <div className={styles.content}>
         <h1 className={styles.rb}>RB</h1>
-        <p className={styles.contact}>contact@rorybuilds.com</p>
+        <p className={styles.contact}>team@rorybuilds.com</p>
       </div>
     </main>
   );

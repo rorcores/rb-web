@@ -23,82 +23,72 @@ function PingPongVideo({ src }: { src: string }) {
 
     let cancelled = false;
     let direction: 1 | -1 = 1;
+    let lastTime = 0;
     let rafId = 0;
-    let lastFrameTime = 0;
 
-    const playForward = () => {
-      if (cancelled) return;
-      direction = 1;
-      video.playbackRate = PLAYBACK_SPEED;
+    video.playbackRate = PLAYBACK_SPEED;
+    video.muted = true;
+
+    const safePlay = () => {
       const p = video.play();
       if (p && typeof p.catch === "function") p.catch(() => {});
     };
 
-    const stepReverse = (now: number) => {
+    const tick = (now: number) => {
       if (cancelled) return;
 
-      if (lastFrameTime === 0) {
-        lastFrameTime = now;
-        rafId = requestAnimationFrame(stepReverse);
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) {
+        rafId = requestAnimationFrame(tick);
         return;
       }
 
-      const dt = (now - lastFrameTime) / 1000;
-      lastFrameTime = now;
+      if (lastTime === 0) lastTime = now;
+      const dt = Math.min((now - lastTime) / 1000, 1 / 15);
+      lastTime = now;
 
-      const next = video.currentTime - PLAYBACK_SPEED * dt;
-
-      if (next <= EDGE) {
-        try {
-          video.currentTime = EDGE;
-        } catch {}
-        lastFrameTime = 0;
-        playForward();
-        return;
+      if (direction === 1) {
+        if (video.playbackRate !== PLAYBACK_SPEED) {
+          video.playbackRate = PLAYBACK_SPEED;
+        }
+        if (video.paused && !document.hidden) {
+          safePlay();
+        }
+        if (video.currentTime >= duration - EDGE) {
+          direction = -1;
+          video.pause();
+        }
+      } else {
+        if (!video.paused) video.pause();
+        const next = video.currentTime - PLAYBACK_SPEED * dt;
+        if (next <= EDGE) {
+          try {
+            video.currentTime = EDGE;
+          } catch {}
+          direction = 1;
+          if (!document.hidden) safePlay();
+        } else {
+          try {
+            video.currentTime = next;
+          } catch {}
+        }
       }
 
-      try {
-        video.currentTime = next;
-      } catch {}
-      rafId = requestAnimationFrame(stepReverse);
-    };
-
-    const startReverse = () => {
-      if (cancelled) return;
-      direction = -1;
-      video.pause();
-      lastFrameTime = 0;
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(stepReverse);
-    };
-
-    const onTimeUpdate = () => {
-      if (
-        direction === 1 &&
-        Number.isFinite(video.duration) &&
-        video.currentTime >= video.duration - EDGE
-      ) {
-        startReverse();
-      }
-    };
-
-    const onEnded = () => {
-      if (direction === 1) startReverse();
+      rafId = requestAnimationFrame(tick);
     };
 
     const start = () => {
       if (cancelled) return;
-      video.pause();
       try {
         video.currentTime = EDGE;
       } catch {}
-      playForward();
+      safePlay();
+      lastTime = 0;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
     };
 
-    video.addEventListener("timeupdate", onTimeUpdate);
-    video.addEventListener("ended", onEnded);
-
-    if (video.readyState >= 2 && video.duration) {
+    if (video.readyState >= 2 && Number.isFinite(video.duration)) {
       start();
     } else {
       video.addEventListener("loadeddata", start, { once: true });
@@ -107,13 +97,9 @@ function PingPongVideo({ src }: { src: string }) {
     const onVisibility = () => {
       if (document.hidden) {
         video.pause();
-        cancelAnimationFrame(rafId);
       } else {
-        if (direction === 1) playForward();
-        else {
-          lastFrameTime = 0;
-          rafId = requestAnimationFrame(stepReverse);
-        }
+        lastTime = 0;
+        if (direction === 1) safePlay();
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
@@ -121,8 +107,6 @@ function PingPongVideo({ src }: { src: string }) {
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
-      video.removeEventListener("timeupdate", onTimeUpdate);
-      video.removeEventListener("ended", onEnded);
       video.removeEventListener("loadeddata", start);
       document.removeEventListener("visibilitychange", onVisibility);
       video.pause();
@@ -154,7 +138,59 @@ export default function Home() {
       <div className={styles.content}>
         <h1 className={styles.rb}>RB</h1>
         <p className={styles.contact}>team@rorybuilds.com</p>
+        <p className={styles.season}>
+          <span className={styles.seasonDot} aria-hidden="true" />
+          Season 01 — Coming Soon
+        </p>
       </div>
+      <Sponsors />
     </main>
+  );
+}
+
+type Sponsor = {
+  name: string;
+  src: string;
+  asMask?: boolean;
+};
+
+const SPONSORS: Sponsor[] = [
+  { name: "Partiful", src: "/sponsors/partiful.png" },
+  { name: "Checkmate", src: "/sponsors/checkmate.svg", asMask: true },
+  { name: "Migrate", src: "/sponsors/migrate.svg", asMask: true },
+];
+
+function Sponsors() {
+  return (
+    <section className={styles.sponsorsBlock} aria-label="Sponsors">
+      <div className={styles.sponsorsHeader}>
+        Proudly <em>Supported</em> By
+      </div>
+      <div className={styles.sponsorsRow}>
+        {SPONSORS.map((s) => (
+          <div className={styles.sponsorTile} key={s.name}>
+            <span className={styles.cornerBL} aria-hidden="true" />
+            <span className={styles.cornerBR} aria-hidden="true" />
+            {s.asMask ? (
+              <div
+                role="img"
+                aria-label={s.name}
+                className={styles.sponsorLogoMask}
+                style={{
+                  WebkitMaskImage: `url(${s.src})`,
+                  maskImage: `url(${s.src})`,
+                }}
+              />
+            ) : (
+              <img
+                className={styles.sponsorLogo}
+                src={s.src}
+                alt={s.name}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

@@ -19,6 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "RORY BUILDS",
   description: "RORY BUILDS — team@rorybuilds.com",
+  manifest: "/site.webmanifest",
 };
 
 export const viewport: Viewport = {

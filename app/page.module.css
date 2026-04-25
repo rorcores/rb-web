@@ -33,7 +33,7 @@
       ellipse at center,
       rgba(0, 0, 0, 0.45) 0%,
       rgba(0, 0, 0, 0.75) 60%,
-      rgba(0, 0, 0, 0.9) 100%
+      rgba(0, 0, 0, 0.92) 100%
     );
   pointer-events: none;
 }
@@ -45,7 +45,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
   text-align: center;
   padding: 2rem;
 }
@@ -53,7 +53,7 @@
 .rb {
   font-family: var(--font-poppins), system-ui, sans-serif;
   font-weight: 900;
-  font-size: clamp(8rem, 28vw, 24rem);
+  font-size: clamp(7rem, 24vw, 22rem);
   line-height: 0.85;
   letter-spacing: -0.04em;
   color: #cc1e00;
@@ -66,12 +66,162 @@
 .contact {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 500;
-  font-size: clamp(0.875rem, 1.6vw, 1.25rem);
+  font-size: clamp(0.875rem, 1.5vw, 1.2rem);
   letter-spacing: 0.18em;
   text-transform: lowercase;
   color: #ffffff;
   opacity: 0.92;
   margin: 0;
+}
+
+.season {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 500;
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0.5rem 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.seasonDot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #cc1e00;
+  box-shadow: 0 0 10px rgba(204, 30, 0, 0.8);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.15); }
+}
+
+.sponsorsBlock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(2rem, 5vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  pointer-events: none;
+}
+
+.sponsorsHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.sponsorsHeader::before,
+.sponsorsHeader::after {
+  content: "";
+  display: block;
+  width: clamp(2.5rem, 5vw, 4.5rem);
+  height: 2px;
+  background: #cc1e00;
+}
+
+.sponsorsHeader em {
+  font-style: normal;
+  color: #cc1e00;
+}
+
+.sponsorsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 4vw, 3rem);
+  flex-wrap: wrap;
+}
+
+.sponsorTile {
+  position: relative;
+  width: clamp(8rem, 14vw, 12rem);
+  height: clamp(3.5rem, 6vw, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #cc1e00;
+  background: rgba(204, 30, 0, 0.06);
+  padding: 0.75rem 1rem;
+}
+
+.sponsorTile::before,
+.sponsorTile::after,
+.sponsorTile > .corner {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+}
+
+.sponsorTile::before {
+  top: -3px;
+  left: -3px;
+  border-top: 2px solid #cc1e00;
+  border-left: 2px solid #cc1e00;
+}
+
+.sponsorTile::after {
+  top: -3px;
+  right: -3px;
+  border-top: 2px solid #cc1e00;
+  border-right: 2px solid #cc1e00;
+}
+
+.cornerBL {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  bottom: -3px;
+  left: -3px;
+  border-bottom: 2px solid #cc1e00;
+  border-left: 2px solid #cc1e00;
+}
+
+.cornerBR {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  bottom: -3px;
+  right: -3px;
+  border-bottom: 2px solid #cc1e00;
+  border-right: 2px solid #cc1e00;
+}
+
+.sponsorLogo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.sponsorLogoMask {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 @media (max-width: 768px) {
@@ -86,5 +236,29 @@
 
   .contact {
     letter-spacing: 0.14em;
+  }
+
+  .sponsorsBlock {
+    bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .sponsorsHeader {
+    letter-spacing: 0.32em;
+  }
+
+  .sponsorsHeader::before,
+  .sponsorsHeader::after {
+    width: 1.5rem;
+  }
+
+  .sponsorsRow {
+    gap: 1rem;
+  }
+
+  .sponsorTile {
+    width: 6.5rem;
+    height: 3rem;
+    padding: 0.5rem 0.75rem;
   }
 }

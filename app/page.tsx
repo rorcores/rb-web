@@ -136,8 +136,20 @@ export default function Home() {
       </div>
       <div className={styles.overlay} aria-hidden="true" />
       <div className={styles.content}>
-        <h1 className={styles.rb}>RB</h1>
-        <p className={styles.contact}>team@rorybuilds.com</p>
+        <img
+          className={styles.prism}
+          src="/brand/prism.png"
+          alt=""
+          aria-hidden="true"
+        />
+        <h1 className={styles.wordmark}>
+          <span>For</span> <span>Those</span> <span>Who</span>{" "}
+          <span className={styles.wordmarkAccent}>Build</span>
+        </h1>
+        <p className={styles.byline}>
+          By <em>Rory Garton-Smith</em>
+        </p>
+        <p className={styles.contact}>team@forthosewho.build</p>
         <p className={styles.season}>
           <span className={styles.seasonDot} aria-hidden="true" />
           Season 01 — Coming Soon

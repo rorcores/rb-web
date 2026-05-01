@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -16,9 +17,16 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const lastica = localFont({
+  src: "../public/fonts/Lastica.ttf",
+  variable: "--font-lastica",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "RORY BUILDS",
-  description: "RORY BUILDS — team@rorybuilds.com",
+  title: "FOR THOSE WHO BUILD",
+  description:
+    "FOR THOSE WHO BUILD — an interview show by Rory Garton-Smith. team@forthosewho.build",
   manifest: "/site.webmanifest",
 };
 
@@ -34,7 +42,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${poppins.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${jetbrainsMono.variable} ${lastica.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
